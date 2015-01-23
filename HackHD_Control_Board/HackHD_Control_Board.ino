@@ -85,7 +85,7 @@ void setup(){
   
 void loop(){
   
-  //Initialize the string
+  //Initialize the string after each pass
   cameraStatusToTransmit = "";
   cameraStatusToTransmit = "HackHD";
   
