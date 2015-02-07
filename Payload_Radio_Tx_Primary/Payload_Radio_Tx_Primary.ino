@@ -54,6 +54,9 @@ void loop() {
   if (Serial1.available()) {
     incomingData1();
     Serial1.println(stringFromSensors);
+    digitalWrite(13,HIGH);
+    delay(100);
+    digitalWrite(13,LOW);
     Serial.println(stringFromSensors);//FOR DEBUGGING
     stringFromSensors = "";
   }
@@ -61,6 +64,9 @@ void loop() {
   if (Serial2.available()) {
     incomingData2();
     Serial1.println(stringFromGPS);
+    digitalWrite(13,HIGH);
+    delay(100);
+    digitalWrite(13,LOW);
     Serial.println(stringFromGPS);//FOR DEBUGGING
     stringFromGPS = "";
   }
@@ -68,6 +74,9 @@ void loop() {
   if (Serial3.available()) {
     incomingData3();
     Serial1.println(stringFromBatteries);
+    digitalWrite(13,HIGH);
+    delay(100);
+    digitalWrite(13,LOW);
     Serial.println(stringFromBatteries);//FOR DEBUGGING
     stringFromBatteries = "";
   }
@@ -166,7 +175,7 @@ void loop() {
   delay(100);
   digitalWrite(13,LOW);
   delay(2000);
-   
+  
 }
 
 void incomingData1() {

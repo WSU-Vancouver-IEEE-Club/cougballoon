@@ -57,26 +57,19 @@ IPAddress gateway(10, 0, 0, 1);
 // the subnet:
 IPAddress subnet(255, 255, 255, 0);
 
-//STILL PLAYING WITH THESE...
 //byte my_ip[] = {76,115,75,114};// FOR HOME NETWORK
 //byte my_ip[] = {166,171,249,250};
-byte my_ip[] = {10,0,0,99};
-//byte my_ip[] = {192,168,1,3};
+byte my_ip[] = {192,168,1,3};
 //byte my_ip[] = {192,168,1,143};//THIS ONE WORKED ONCE.....
 
 char *tokens1[nTracesA] = {"nf4u8crau4", "tyoekcb695", "85tk2ys77r", "2nznlhyjuy", "hveclaset9", "tjojhtubne", "ql5jh44r2f", "lfyq2b2qep"};
 char *tokens2[nTracesB] = {"dzl1r1ik7l", "kpjiisg7dy"};
 char *tokens3[nTracesC] = {"y9vwycvseh", "l6pq0nuui0", "1650czs560"};
 
-//ADDED TO TRY NEW CODE FROM CHRIS
-char *traces1[nTracesA] = {"Radio/GPS", "HackHD1", "HackHD2", "HackHD3", "HackHD4", "HackHD5", "HackHD6", "Video Tx"};
-char *traces2[nTracesB] = {"CO", "CH4"};
-char *traces3[nTracesC] = {"Internal", "External", "Video Tx"};
-
 // arguments: username, api key, streaming token, filename
-plotly graph1 = plotly("michael.l.hamilton", "cxrph8m4eh", "#cougballoon battery levels", tokens1, traces1, "cougballoon battery levels", nTracesA);
-plotly graph2 = plotly("michael.l.hamilton", "cxrph8m4eh", "#cougballoon air quality", tokens2, traces2, "cougballoon air quality", nTracesB);
-plotly graph3 = plotly("michael.l.hamilton", "cxrph8m4eh", "#cougballoon temperatures", tokens3, traces3, "cougballoon temperatures", nTracesC);
+plotly graph1 = plotly("michael.l.hamilton", "cxrph8m4eh", tokens1, "cougballoon battery levels", nTracesA);
+plotly graph2 = plotly("michael.l.hamilton", "cxrph8m4eh", tokens2, "cougballoon air quality", nTracesB);
+plotly graph3 = plotly("michael.l.hamilton", "cxrph8m4eh", tokens3, "cougballoon temperatures", nTracesC);
 
 
 void startEthernet(){
@@ -114,7 +107,7 @@ void setup() {
   Serial.println("#####################################");
   Serial.println("");
   Serial.println("");
-  /*
+  
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
   pinMode(SS, OUTPUT);
@@ -126,6 +119,7 @@ void setup() {
     while (1) ;
   }
   Serial.println("SD card initialized.");
+  
   // open a new file and immediately close it:
   Serial.println("Creating balloon.txt..."); //COMMENTED OUT FOR TESTING!!!!!
   /* FAT file systems have a limitation when it comes to naming conventions. 
@@ -137,7 +131,6 @@ void setup() {
   //dataFile = SD.open("balloon.txt", FILE_WRITE);
   //dataFile.close();
   // Check to see if the file exists: 
-  /*
   if (SD.exists("balloon.txt")) {
     Serial.println("File balloon.txt exists.");
   }
@@ -157,7 +150,7 @@ void setup() {
     while (1) ;
   }
   dataFile.close();
-*/
+
   startEthernet(); //THIS STARTS THE INTERNET WORKING
   
   //THIS SETS UP THE PLOTLY GRAPHS
@@ -182,11 +175,11 @@ void loop() {
     stringFromBalloonComplete = false;
     incomingData();
 
-    //dataFile = SD.open("balloon.txt", FILE_WRITE);
+    dataFile = SD.open("balloon.txt", FILE_WRITE);
     //THIS WILL SAVE EACH INCOMING STRING TO THE SD CARD ON ETHERNET SHIELD
     //dataFile.println(stringFromBalloon + separator + dateStringFromGPS);
-    //dataFile.println(stringFromBalloon);
-    //dataFile.close();
+    dataFile.println(stringFromBalloon);
+    dataFile.close();
     
     if (stringFromBalloon.startsWith("A")) {
       stringFromBalloon = stringFromBalloon.substring(1,6);//Fix second digit for substring lengths depending on what's needed for each.
