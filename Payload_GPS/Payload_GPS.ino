@@ -8,6 +8,8 @@
 
 //SENDS NOTHING BUT GPS STRINGS
 
+//Serial out goes to primary transmitter
+
 //Can only have one software serial port open at a time on UNO
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
