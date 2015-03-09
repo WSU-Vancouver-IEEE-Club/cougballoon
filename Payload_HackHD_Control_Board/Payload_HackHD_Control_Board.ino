@@ -222,7 +222,7 @@ void loop(){
 
 
   //CAMERA 5 STATE TEST
-  pinMode(HackH51LED, INPUT);
+  pinMode(HackHD5LED, INPUT);
   HackHD5State = digitalRead(HackHD5LED);
   delay(50);
   if(HackHD5State) {
