@@ -3,9 +3,14 @@
 // Michael Hamilton
 // #cougballoon
 // HackHD Control Board
-// Nov 21 2014
+// version 1.0 Nov 21 2014
+// version 1.1 Mar 8 2015
 ///////////////////////////////
 
+//Serial out goes to the primary transmitter
+//The delay between each camera test is set to 5 seconds
+
+//Initialze the pin numbers
 const int HackHD1LED = 8;
 const int restartHackHD1 = 2;
 const int HackHD2LED = 9;
@@ -19,6 +24,7 @@ const int restartHackHD5 = 6;
 const int HackHD6LED = 13;
 const int restartHackHD6 = 7;
 
+//Initialize the states
 int HackHD1State = 0;
 int HackHD2State = 0;
 int HackHD3State = 0;
@@ -28,22 +34,24 @@ int HackHD6State = 0;
 
 unsigned long timeStart1;
 
+//Begin the string
 String cameraStatusToTransmit = "HackHD";
 
 void setup(){
   
   //Initializes pins
-  pinMode(HackHD1LED, INPUT);
+  //Will set LED pins to inputs when needed, are outputs initially
+  pinMode(HackHD1LED, OUTPUT);
   pinMode(restartHackHD1, OUTPUT);
-  pinMode(HackHD2LED, INPUT);
+  pinMode(HackHD2LED, OUTPUT);
   pinMode(restartHackHD2, OUTPUT);
-  pinMode(HackHD3LED, INPUT);
+  pinMode(HackHD3LED, OUTPUT);
   pinMode(restartHackHD3, OUTPUT);
-  pinMode(HackHD4LED, INPUT);
+  pinMode(HackHD4LED, OUTPUT);
   pinMode(restartHackHD4, OUTPUT);
-  pinMode(HackHD5LED, INPUT);
+  pinMode(HackHD5LED, OUTPUT);
   pinMode(restartHackHD5, OUTPUT);
-  pinMode(HackHD6LED, INPUT);
+  pinMode(HackHD6LED, OUTPUT);
   pinMode(restartHackHD6, OUTPUT);
   
   Serial.begin(9600);
@@ -56,8 +64,8 @@ void setup(){
   Serial.println("");
   Serial.println("");
   
-  //Delay just for the heck of it
-  delay(5000);
+  //Delay just to let everything settle
+  delay(2000);
   
   //Turn each camera on
   digitalWrite(restartHackHD1, HIGH);
@@ -89,7 +97,8 @@ void loop(){
   cameraStatusToTransmit = "";
   cameraStatusToTransmit = "HackHD";
   
-  //Camera 1 state test
+  //CAMERA 1 STATE TEST
+  pinMode(HackHD1LED, INPUT);
   HackHD1State = digitalRead(HackHD1LED);
   delay(50);
   if(HackHD1State) {
@@ -115,8 +124,12 @@ void loop(){
       break;
     }  
   }
+  pinMode(HackHD1LED, OUTPUT);
+  delay(5000);
+  
 
-
+  //CAMERA 2 STATE TEST
+  pinMode(HackHD2LED, INPUT);
   HackHD2State = digitalRead(HackHD2LED);
   delay(50);
   if(HackHD2State) {
@@ -142,7 +155,12 @@ void loop(){
       break;
     }  
   }
+  pinMode(HackHD2LED, OUTPUT);
+  delay(5000);
 
+
+  //CAMERA 3 STATE TEST
+  pinMode(HackHD3LED, INPUT);
   HackHD3State = digitalRead(HackHD3LED);
   delay(50);
   if(HackHD3State) {
@@ -168,7 +186,12 @@ void loop(){
       break;
     }  
   }
+  pinMode(HackHD3LED, OUTPUT);
+  delay(5000);
 
+
+  //CAMERA 4 STATE TEST
+  pinMode(HackHD4LED, INPUT);
   HackHD4State = digitalRead(HackHD4LED);
   delay(500);
   if(HackHD4State) {
@@ -194,7 +217,12 @@ void loop(){
       break;
     }  
   }
+  pinMode(HackHD4LED, OUTPUT);
+  delay(5000);
 
+
+  //CAMERA 5 STATE TEST
+  pinMode(HackH51LED, INPUT);
   HackHD5State = digitalRead(HackHD5LED);
   delay(50);
   if(HackHD5State) {
@@ -220,7 +248,12 @@ void loop(){
       break;
     }  
   }
+  pinMode(HackHD5LED, OUTPUT);
+  delay(5000);
 
+
+  //CAMERA 6 STATE TEST
+  pinMode(HackHD6LED, INPUT);
   HackHD6State = digitalRead(HackHD6LED);
   delay(50);
   if(HackHD6State) {
@@ -246,6 +279,11 @@ void loop(){
       break;
     }  
   }
+  pinMode(HackHD6LED, OUTPUT);
+  delay(5000);
+  
+  
+  //SEND THE STRING TO THE RADIO
   //Serial.print("Camera Status To Transmit: ");
   Serial.println(cameraStatusToTransmit);
 }
