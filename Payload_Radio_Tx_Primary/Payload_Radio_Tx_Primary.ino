@@ -1,3 +1,5 @@
+#include <Adafruit_NeoPixel.h>
+
 ////////////////////////////////////
 // Written for Teensy 3.1
 // Michael Hamilton
@@ -19,11 +21,16 @@ String stringFromSensors = "";
 String stringFromGPS = "";
 String stringFromHackHDtest = "";
 
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(5, 6, NEO_GRB + NEO_KHZ800);
+
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
   Serial2.begin(9600);
   Serial3.begin(9600);
+        
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
         
   Serial1.println("");
   Serial1.println("");
@@ -32,22 +39,24 @@ void setup() {
   Serial1.println("########################################");
   Serial1.println("");
   Serial1.println("");
-  pinMode(13,OUTPUT);
+  pinMode(13, OUTPUT);
   
   //BLINK THREE TIMES TO SHOW IT'S ON
-  digitalWrite(13,HIGH);
+  digitalWrite(13, HIGH);
+  strip.setPixelColor(0, 255, 0, 0);
+  strip.show();
   delay(100);
-  digitalWrite(13,LOW);
+  digitalWrite(13, LOW);
   delay(100);
-  digitalWrite(13,HIGH);
+  digitalWrite(13, HIGH);
+  strip.show();
   delay(100);
-  digitalWrite(13,LOW);
+  digitalWrite(13, LOW);
   delay(100);
-  digitalWrite(13,HIGH);
+  digitalWrite(13, HIGH);
   delay(100);
-  digitalWrite(13,LOW);
+  digitalWrite(13, LOW);
   delay(100);
-  
 }
 
 void loop() {
@@ -78,7 +87,7 @@ void loop() {
     digitalWrite(13,HIGH);
     delay(100);
     digitalWrite(13,LOW);
-    Serial.println(stringFromSensors);//FOR DEBUGGING
+    //Serial.println(stringFromSensors);//FOR DEBUGGING
     stringFromSensors = "";
   }
   
