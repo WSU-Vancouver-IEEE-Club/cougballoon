@@ -17,11 +17,9 @@
 
 #Try to show an altitude graph embedded on map. Not easy.
 
-#Does it pull up a different graph every time? Mostly no.
-
 #Need to edit index.html javascript to do different things with the graph.
 
-#May have to change center on the javascript for the index.html to Salem
+#May have to change center on the javascript for /Sites/index.html to Salem
 
 import plotly
 plotly.__version__
@@ -35,7 +33,8 @@ import serial
 import io
 import os
 
-ser = serial.Serial('/dev/tty.usbmodem1411', 9600)
+#ser = serial.Serial('/dev/tty.usbmodem1411', 9600)
+ser = serial.Serial('/dev/tty.usbmodem1421', 9600)
 
 def StringToFloat(a):
   a = a[1:7]
@@ -43,6 +42,11 @@ def StringToFloat(a):
   a = a.rstrip('\r');
   a = float(a)
   return a
+
+def saveAllIncomingData(c):
+  f = open('/Users/michaelhamilton/Desktop/cougballoonData.txt', 'a')
+  f.write(c)
+  f.close
 
 def handleGPSdata(b):
   #f = open('/Users/michaelhamilton/gpsbabel/nmeaRawData.doc', 'a')
@@ -132,8 +136,8 @@ layout_a = Layout(title='#cougballoon temperatures')#This is the name on the gra
 layout_b = Layout(title='#cougballoon air quality levels')#This is the name on the graph
 fig_a = Figure(data=data_graph_a, layout=layout_a)
 fig_b = Figure(data=data_graph_b, layout=layout_b)
-unique_url_a = py.plot(fig_a, filename='cougballoon1')#Name above the graph
-unique_url_b = py.plot(fig_b, filename='cougballoon2')#Name above the graph
+unique_url_a = py.plot(fig_a, filename='cougballoon1', fileopt='extend')#Name above the graph
+unique_url_b = py.plot(fig_b, filename='cougballoon2', fileopt='extend')#Name above the graph
 print unique_url_a
 print unique_url_b
 s1 = py.Stream(stream_id1)
@@ -159,45 +163,62 @@ while True:
   x = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')      
     
   line = ser.readline() #properly captures incoming string
+  saveAllIncomingData(x)  
+  saveAllIncomingData(line)
+  #External temperature   #A
   if ((line.find("A")) == 0):
-    print "FOUND AN A!"
+    print "External temperature:"
     y = StringToFloat(line)
     print y
     # write to Plotly stream!
     s1.write(dict(x=x, y=y))    
+  
+  #External pressure      #B
   elif ((line.find("B")) == 0):
-    print "FOUND A B!"
+    print "External Pressure:"
     y = StringToFloat(line)
     print y   
     # write to Plotly stream!
     #s2.write(dict(x=x, y=y))  
+   
+  #Internal temperature   #C  
   elif ((line.find("C")) == 0):
-    print "FOUND A C!"
+    print "Internal temperature:"
     y = StringToFloat(line)
     print y
     s3.write(dict(x=x, y=y)) 
+  
+  #Internal pressure      #D
   elif ((line.find("D")) == 0):
-    print "FOUND A D!"
+    print "Internal pressure:"
     y = StringToFloat(line)
     print y  
     #s4.write(dict(x=x, y=y)) 
+  
+  #Videolynx temperature  #E  
   elif ((line.find("E")) == 0):
-    print "FOUND AN E!"
+    print "Videolynx temperature:"
     y = StringToFloat(line)
     print y
     s5.write(dict(x=x, y=y))
+  
+  #CO level in ppm        #F  
   elif ((line.find("F")) == 0):
-    print "FOUND AN F!" 
+    print "CO level (in ppm):" 
     y = StringToFloat(line)
     print y
     s6.write(dict(x=x, y=y))
+  
+  #CH4 level in ppm       #G  
   elif ((line.find("G")) == 0):
-    print "FOUND A G!"
+    print "CH4 level (in ppm):"
     y = StringToFloat(line)
     print y
     s7.write(dict(x=x, y=y))
+  
+  #Humidity               #J  
   elif ((line.find("J")) == 0):
-    print "FOUND A J!"
+    print "Humidity:"
     y = StringToFloat(line)
     print y
   elif ((line.find("K")) == 0):
@@ -210,7 +231,7 @@ while True:
     print y
   #HACK INFO BELOW
   elif ((line.find("Hack")) == 0):
-    print "FOUND HackHD!"
+    print "HackHD information"
     print y
   #What do we want to do with HackHD information?
   elif ((line.find("P")) == 0):

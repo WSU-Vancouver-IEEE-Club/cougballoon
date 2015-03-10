@@ -3,10 +3,16 @@
 // Michael Hamilton
 // #cougballoon
 // Air Quality Sensor Board
-// Jan 9 2015
+// v1.0 Jan 9 2015
+// v1.1 Mar 9 2015
 ///////////////////////////////
 
+//NEED TO ADD IN INFO FOR THREE TEMPERATURES
+//ATTEMPT TO GET OZONE SENSOR OPERATIONAL
+
+
 char _int2str[7];
+
 char* int2str( register int i ) {
   register unsigned char L = 1;
   register char c;
@@ -147,29 +153,29 @@ void setup()
 
 void loop()
 {
+  
+  Serial.println("");
+  Serial.println("");
+  
+  //NEED TO TEST AND SEE WHICH ONE WORKS AND PROPERLY SENDS STRINGS
   calculate_CO_PPM();// B
-  //Serial.print("Carbon Monoxide (CO) level: ");
-  Serial.print("B");
-  Serial.println(coppm);
-  //Serial.println(" ppm");
-  //Serial.println(" ");
+  //Do I need to do this??
   //char* analogValueCOppm = int2str(coppm);
-  //Serial.write(analogValueCOppm);
-  //Serial.println(coppm);
-  //Serial.print("Carbon Monoxide (CO) level: ");
-  //Serial.println(analogValueCOppm);
-
+  
+  Serial.print("F");
+  Serial.println(coppm);
   delay(2000);
   
-  calculate_CH4_PPM();// C
-  char* analogValueCH4ppm = int2str(ch4ppm);
-  //Serial.print("Methane (CH4) level:        ");
-  Serial.print("C");
-  Serial.println(ch4ppm);
-  //Serial.println(" ppm");
-  //Serial.println(" ");
-  //Serial.write(ch4ppm);
+  Serial.println("");
+  Serial.println("");
   
+  //NEED TO TEST AND SEE WHICH ONE WORKS AND PROPERLY SENDS STRINGS
+  calculate_CH4_PPM();// C
+  //Do I need to do this??
+  //char* analogValueCH4ppm = int2str(ch4ppm);
+  
+  Serial.print("G");
+  Serial.println(ch4ppm);
   delay(2000);
 
 }

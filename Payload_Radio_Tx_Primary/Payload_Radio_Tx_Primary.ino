@@ -7,9 +7,11 @@
 // version 1.1 Mar 8 2015
 ////////////////////////////////////
 
-//Serial1 RX will be receiving the Air Quality/Temp Levels
+
+
+//Serial1 RX will be receiving the HackHD information
 //Serial2 RX will be receiving the GPS Data
-//Serial3 RX will be receiving the HackHD information
+//Serial3 RX will be receiving the Air Quality/Temp Levels
 
 //Serial1 TX will be sending data to the radio 
 
@@ -49,15 +51,15 @@ void setup() {
 }
 
 void loop() {
- 
+  
   if (Serial1.available()) {
     incomingData1();
-    Serial1.println(stringFromSensors);
+    Serial1.println(stringFromHackHDtest);
     digitalWrite(13,HIGH);
     delay(100);
     digitalWrite(13,LOW);
-    //Serial.println(stringFromSensors);//FOR DEBUGGING
-    stringFromSensors = "";
+    //Serial.println(stringFromHackHDtest);//FOR DEBUGGING
+    stringFromHackHDtest = "";
   }
   
   if (Serial2.available()) {
@@ -69,22 +71,23 @@ void loop() {
     //Serial.println(stringFromGPS);//FOR DEBUGGING
     stringFromGPS = "";
   }
+  
   if (Serial3.available()) {
     incomingData3();
-    Serial1.println(stringFromHackHDtest);
+    Serial1.println(stringFromSensors);
     digitalWrite(13,HIGH);
     delay(100);
     digitalWrite(13,LOW);
-    //Serial.println(stringFromHackHDtest);//FOR DEBUGGING
-    stringFromHackHDtest = "";
+    //Serial.println(stringFromSensors);//FOR DEBUGGING
+    stringFromSensors = "";
   }
   
 }
 
 void incomingData1() {
   while (Serial1.available()){
-    char inChar = (char)Serial1.read(); 
-    stringFromSensors += inChar;
+    char inChar = (char)Serial3.read(); 
+    stringFromHackHDtest += inChar;
     delay(5); //give the serial port time to catch up
   }
 }
@@ -99,8 +102,12 @@ void incomingData2() {
 
 void incomingData3() {
   while (Serial3.available()){
-    char inChar = (char)Serial3.read(); 
-    stringFromHackHDtest += inChar;
+    char inChar = (char)Serial1.read(); 
+    stringFromSensors += inChar;
     delay(5); //give the serial port time to catch up
   }
 }
+
+
+
+
