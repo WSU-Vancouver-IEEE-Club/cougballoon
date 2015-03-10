@@ -78,7 +78,7 @@ void loop() {
     digitalWrite(13,HIGH);
     delay(100);
     digitalWrite(13,LOW);
-    //Serial.println(stringFromSensors);//FOR DEBUGGING
+    Serial.println(stringFromSensors);//FOR DEBUGGING
     stringFromSensors = "";
   }
   
@@ -86,7 +86,7 @@ void loop() {
 
 void incomingData1() {
   while (Serial1.available()){
-    char inChar = (char)Serial3.read(); 
+    char inChar = (char)Serial1.read(); 
     stringFromHackHDtest += inChar;
     delay(5); //give the serial port time to catch up
   }
@@ -102,7 +102,7 @@ void incomingData2() {
 
 void incomingData3() {
   while (Serial3.available()){
-    char inChar = (char)Serial1.read(); 
+    char inChar = (char)Serial3.read(); 
     stringFromSensors += inChar;
     delay(5); //give the serial port time to catch up
   }

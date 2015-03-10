@@ -6,7 +6,7 @@
 #  Mar 1, 2015
 #////////////////////////////
 
-#Needs some cleaning up
+#Need to save all incoming data
 
 #Modified file for Raspberry Pi on Raspberry Pi /home/pi/Desktop/.
 
@@ -53,6 +53,7 @@ def handleGPSdata(b):
   f = open('/Users/michaelhamilton/gpsbabel/nmeaRawData.txt', 'a')
   f.write(b)
   f.close()
+  saveAllIncomingData(b)
   #os.system("cd /Users/michaelhamilton/gpsbabel && ./gpsbabel -i nmea -f nmeaRawData.doc -o kml,deficon=http://encs.vancouver.wsu.edu/~mikehmbn/balloon-icon-map.png,line_color=FF321E98,floating=1 -F cougballoon.kml")  
   os.system("cd /Users/michaelhamilton/gpsbabel && ./gpsbabel -i nmea -f nmeaRawData.txt -o kml,deficon=http://encs.vancouver.wsu.edu/~mikehmbn/balloon-icon-map.png,line_color=FF321E98,floating=1 -F cougballoon.kml")
   os.system("cd /Users/michaelhamilton/gpsbabel && scp cougballoon.kml mikehmbn@lx.encs.vancouver.wsu.edu:Sites/")
@@ -163,14 +164,14 @@ while True:
   x = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')      
     
   line = ser.readline() #properly captures incoming string
-  saveAllIncomingData(x)  
-  saveAllIncomingData(line)
+  
   #External temperature   #A
   if ((line.find("A")) == 0):
     print "External temperature:"
     y = StringToFloat(line)
     print y
-    # write to Plotly stream!
+    saveAllIncomingData(x)
+    saveAllIncomingData(y)
     s1.write(dict(x=x, y=y))    
   
   #External pressure      #B
@@ -207,6 +208,8 @@ while True:
     print "CO level (in ppm):" 
     y = StringToFloat(line)
     print y
+    saveAllIncomingData(x)
+    saveAllIncomingData(y)    
     s6.write(dict(x=x, y=y))
   
   #CH4 level in ppm       #G  
@@ -214,6 +217,8 @@ while True:
     print "CH4 level (in ppm):"
     y = StringToFloat(line)
     print y
+    saveAllIncomingData(x)
+    saveAllIncomingData(y)    
     s7.write(dict(x=x, y=y))
   
   #Humidity               #J  
