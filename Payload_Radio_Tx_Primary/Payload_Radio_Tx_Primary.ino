@@ -28,10 +28,10 @@ void setup() {
   Serial1.begin(9600);
   Serial2.begin(9600);
   Serial3.begin(9600);
-        
+
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-        
+
   Serial1.println("");
   Serial1.println("");
   Serial1.println("########################################");
@@ -40,7 +40,7 @@ void setup() {
   Serial1.println("");
   Serial1.println("");
   pinMode(13, OUTPUT);
-  
+
   //BLINK THREE TIMES TO SHOW IT'S ON
   digitalWrite(13, HIGH);
   strip.setPixelColor(0, 255, 0, 0);
@@ -60,7 +60,7 @@ void setup() {
 }
 
 void loop() {
-  
+
   if (Serial1.available()) {
     incomingData1();
     Serial1.println(stringFromHackHDtest);
@@ -70,7 +70,7 @@ void loop() {
     //Serial.println(stringFromHackHDtest);//FOR DEBUGGING
     stringFromHackHDtest = "";
   }
-  
+
   if (Serial2.available()) {
     incomingData2();
     Serial1.println(stringFromGPS);
@@ -80,7 +80,7 @@ void loop() {
     //Serial.println(stringFromGPS);//FOR DEBUGGING
     stringFromGPS = "";
   }
-  
+
   if (Serial3.available()) {
     incomingData3();
     Serial1.println(stringFromSensors);
@@ -90,7 +90,7 @@ void loop() {
     //Serial.println(stringFromSensors);//FOR DEBUGGING
     stringFromSensors = "";
   }
-  
+
 }
 
 void incomingData1() {
@@ -116,6 +116,7 @@ void incomingData3() {
     delay(5); //give the serial port time to catch up
   }
 }
+
 
 
 
