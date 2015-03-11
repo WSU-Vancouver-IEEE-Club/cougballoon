@@ -41,17 +41,17 @@ void setup(){
   
   //Initializes pins
   //Will set LED pins to inputs when needed, are outputs initially
-  pinMode(HackHD1LED, OUTPUT);
+  pinMode(HackHD1LED, INPUT);
   pinMode(restartHackHD1, OUTPUT);
-  pinMode(HackHD2LED, OUTPUT);
+  pinMode(HackHD2LED, INPUT);
   pinMode(restartHackHD2, OUTPUT);
-  pinMode(HackHD3LED, OUTPUT);
+  pinMode(HackHD3LED, INPUT);
   pinMode(restartHackHD3, OUTPUT);
-  pinMode(HackHD4LED, OUTPUT);
+  pinMode(HackHD4LED, INPUT);
   pinMode(restartHackHD4, OUTPUT);
-  pinMode(HackHD5LED, OUTPUT);
+  pinMode(HackHD5LED, INPUT);
   pinMode(restartHackHD5, OUTPUT);
-  pinMode(HackHD6LED, OUTPUT);
+  pinMode(HackHD6LED, INPUT);
   pinMode(restartHackHD6, OUTPUT);
   
   Serial.begin(9600);
@@ -92,13 +92,13 @@ void setup(){
 }
   
 void loop(){
-  
+  Serial.println("Message from atmega");
   //Initialize the string after each pass
   cameraStatusToTransmit = "";
   cameraStatusToTransmit = "HackHD";
   
   //CAMERA 1 STATE TEST
-  pinMode(HackHD1LED, INPUT);
+ // pinMode(HackHD1LED, INPUT);
   HackHD1State = digitalRead(HackHD1LED);
   delay(50);
   if(HackHD1State) {
@@ -124,12 +124,12 @@ void loop(){
       break;
     }  
   }
-  pinMode(HackHD1LED, OUTPUT);
+ // pinMode(HackHD1LED, OUTPUT);
   delay(5000);
   
 
   //CAMERA 2 STATE TEST
-  pinMode(HackHD2LED, INPUT);
+//  pinMode(HackHD2LED, INPUT);
   HackHD2State = digitalRead(HackHD2LED);
   delay(50);
   if(HackHD2State) {
@@ -155,12 +155,12 @@ void loop(){
       break;
     }  
   }
-  pinMode(HackHD2LED, OUTPUT);
+ // pinMode(HackHD2LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 3 STATE TEST
-  pinMode(HackHD3LED, INPUT);
+//  pinMode(HackHD3LED, INPUT);
   HackHD3State = digitalRead(HackHD3LED);
   delay(50);
   if(HackHD3State) {
@@ -186,12 +186,12 @@ void loop(){
       break;
     }  
   }
-  pinMode(HackHD3LED, OUTPUT);
+//  pinMode(HackHD3LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 4 STATE TEST
-  pinMode(HackHD4LED, INPUT);
+ // pinMode(HackHD4LED, INPUT);
   HackHD4State = digitalRead(HackHD4LED);
   delay(500);
   if(HackHD4State) {
@@ -217,12 +217,12 @@ void loop(){
       break;
     }  
   }
-  pinMode(HackHD4LED, OUTPUT);
+//  pinMode(HackHD4LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 5 STATE TEST
-  pinMode(HackHD5LED, INPUT);
+ // pinMode(HackHD5LED, INPUT);
   HackHD5State = digitalRead(HackHD5LED);
   delay(50);
   if(HackHD5State) {
@@ -248,12 +248,12 @@ void loop(){
       break;
     }  
   }
-  pinMode(HackHD5LED, OUTPUT);
+//  pinMode(HackHD5LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 6 STATE TEST
-  pinMode(HackHD6LED, INPUT);
+//  pinMode(HackHD6LED, INPUT);
   HackHD6State = digitalRead(HackHD6LED);
   delay(50);
   if(HackHD6State) {
@@ -279,7 +279,7 @@ void loop(){
       break;
     }  
   }
-  pinMode(HackHD6LED, OUTPUT);
+//  pinMode(HackHD6LED, OUTPUT);
   delay(5000);
   
   
