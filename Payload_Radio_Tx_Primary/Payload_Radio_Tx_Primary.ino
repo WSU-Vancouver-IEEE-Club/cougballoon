@@ -43,20 +43,36 @@ void setup() {
 
   //BLINK THREE TIMES TO SHOW IT'S ON
   digitalWrite(13, HIGH);
-  strip.setPixelColor(0, 255, 0, 0);
+  strip.setPixelColor(0, 127, 0, 0);
   strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
   digitalWrite(13, HIGH);
+  strip.setPixelColor(1, 127, 127, 0);
   strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
   digitalWrite(13, HIGH);
+  strip.setPixelColor(2, 0, 127, 0);
+  strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
+  digitalWrite(13, HIGH);
+  strip.setPixelColor(3, 0, 0, 127);
+  strip.show();
+  delay(100);
+  digitalWrite(13, LOW);
+  delay(100);
+  digitalWrite(13, HIGH);
+  strip.setPixelColor(4, 127, 0, 127);
+  strip.show();
+  delay(100);
+  digitalWrite(13, LOW);
+  delay(100);
+
 }
 
 void loop() {
