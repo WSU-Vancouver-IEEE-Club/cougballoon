@@ -10,7 +10,6 @@
 ////////////////////////////////////
 
 
-
 //Serial1 RX will be receiving the HackHD information
 //Serial2 RX will be receiving the GPS Data
 //Serial3 RX will be receiving the Air Quality/Temp Levels
@@ -19,10 +18,12 @@
 
 //Serial RXTX is USB debug only.
 
+
 String stringFromSensors = "";
 String stringFromGPS = "";
 String stringFromHackHDtest = "";
 
+//Neopixel string of 5 serving as status lights. Currently, S:1-S:3 are lit green when serial data is being received on their corresponding ports, and S:1 is lit red when main TX is transmitting.
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(5, 6, NEO_GRB + NEO_KHZ800);
 
 void setup() {
@@ -50,35 +51,35 @@ void setup() {
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
-  
+
   digitalWrite(13, HIGH);
   strip.setPixelColor(1, 127, 127, 0); //YELLOW
   strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
-  
+
   digitalWrite(13, HIGH);
   strip.setPixelColor(2, 0, 127, 0); //GREEN
   strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
-  
+
   digitalWrite(13, HIGH);
   strip.setPixelColor(3, 0, 0, 127); //BLUE
   strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(100);
-  
+
   digitalWrite(13, HIGH);
   strip.setPixelColor(4, 127, 0, 127); //PURPLE
   strip.show();
   delay(100);
   digitalWrite(13, LOW);
   delay(500);
-  
+
   for(int i = 0; i < 5; i++) {
     strip.setPixelColor(i, 0, 0, 0); //OFF
     strip.show();
@@ -90,64 +91,74 @@ void loop() {
 
   if (Serial1.available()) {
     incomingData1();
-    Serial1.println(stringFromHackHDtest);
-    strip.setPixelColor(0, 0, 127, 0); //GREEN
+    strip.setPixelColor(0, 127, 0, 0); //RED
     strip.show();
+    Serial1.println(stringFromHackHDtest);
+    delay(150);
     //Serial.println(stringFromHackHDtest); //FOR DEBUGGING
     stringFromHackHDtest = "";
-  }
-  else {
     strip.setPixelColor(0, 0, 0, 0); //OFF
     strip.show();
   }
 
   if (Serial2.available()) {
     incomingData2();
-    Serial1.println(stringFromGPS);
-    strip.setPixelColor(1, 0, 127, 0); //GREEN
+    strip.setPixelColor(0, 127, 0, 0); //RED
     strip.show();
+    Serial1.println(stringFromGPS);
+    delay(150);
     //Serial.println(stringFromGPS); //FOR DEBUGGING
     stringFromGPS = "";
-  }
-  else {
-    strip.setPixelColor(1, 0, 0, 0); //OFF
+    strip.setPixelColor(0, 0, 0, 0); //OFF
     strip.show();
   }
 
   if (Serial3.available()) {
     incomingData3();
-    Serial1.println(stringFromSensors);
-    strip.setPixelColor(2, 0, 127, 0); //GREEN
+    strip.setPixelColor(0, 127, 0, 0); //RED
     strip.show();
+    Serial1.println(stringFromSensors);
+    delay(150);
     //Serial.println(stringFromSensors); //FOR DEBUGGING
     stringFromSensors = "";
-  }
-  else {
-    strip.setPixelColor(2, 0, 0, 0); //OFF
+    strip.setPixelColor(0, 0, 0, 0); //OFF
     strip.show();
   }
 }
 
 void incomingData1() {
+  strip.setPixelColor(0, 0, 127, 0); //GREEN
+  strip.show();
   while (Serial1.available()){
     char inChar = (char)Serial1.read(); 
     stringFromHackHDtest += inChar;
     delay(5); //give the serial port time to catch up
   }
+  strip.setPixelColor(0, 0, 0, 0); //OFF
+  strip.show();
 }
 
 void incomingData2() {
+  strip.setPixelColor(1, 0, 127, 0); //GREEN
+  strip.show();
   while (Serial2.available()){
     char inChar = (char)Serial2.read(); 
     stringFromGPS += inChar;
     delay(5); //give the serial port time to catch up
   }
+  strip.setPixelColor(1, 0, 0, 0); //OFF
+  strip.show();
 }
 
 void incomingData3() {
+  strip.setPixelColor(2, 0, 127, 0); //GREEN
+  strip.show();
   while (Serial3.available()){
     char inChar = (char)Serial3.read(); 
     stringFromSensors += inChar;
     delay(5); //give the serial port time to catch up
   }
+  strip.setPixelColor(2, 0, 0, 0); //OFF
+  strip.show();
 }
+
