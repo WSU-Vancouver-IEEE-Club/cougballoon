@@ -38,7 +38,7 @@ unsigned long timeStart1;
 String cameraStatusToTransmit = "HackHD";
 
 void setup(){
-  
+
   //Initializes pins
   //Will set LED pins to inputs when needed, are outputs initially
   pinMode(HackHD1LED, INPUT);
@@ -54,8 +54,15 @@ void setup(){
   pinMode(HackHD6LED, INPUT);
   pinMode(restartHackHD6, OUTPUT);
   
+  digitalWrite(restartHackHD1, HIGH);
+  digitalWrite(restartHackHD2, HIGH);
+  digitalWrite(restartHackHD3, HIGH);
+  digitalWrite(restartHackHD4, HIGH);
+  digitalWrite(restartHackHD5, HIGH);
+  digitalWrite(restartHackHD5, HIGH);
+
   Serial.begin(9600);
-  
+
   Serial.println("");
   Serial.println("");
   Serial.println("###########################################");
@@ -63,42 +70,42 @@ void setup(){
   Serial.println("###########################################");
   Serial.println("");
   Serial.println("");
-  
+
   //Delay just to let everything settle
   delay(2000);
-  
+
   //Turn each camera on
-  digitalWrite(restartHackHD1, HIGH);
-  delay(800);
   digitalWrite(restartHackHD1, LOW);
-  digitalWrite(restartHackHD2, HIGH);
-  delay(800);
+  delay(500);
+  digitalWrite(restartHackHD1, HIGH);
   digitalWrite(restartHackHD2, LOW);
-  digitalWrite(restartHackHD3, HIGH);
-  delay(800);
+  delay(500);
+  digitalWrite(restartHackHD2, HIGH);
   digitalWrite(restartHackHD3, LOW);
-  digitalWrite(restartHackHD4, HIGH);
-  delay(800);
+  delay(500);
+  digitalWrite(restartHackHD3, HIGH);
   digitalWrite(restartHackHD4, LOW);
-  digitalWrite(restartHackHD5, HIGH);
-  delay(800);
+  delay(500);
+  digitalWrite(restartHackHD4, HIGH);
   digitalWrite(restartHackHD5, LOW);
-  digitalWrite(restartHackHD6, HIGH);
-  delay(800);
+  delay(500);
+  digitalWrite(restartHackHD5, HIGH);
   digitalWrite(restartHackHD6, LOW);
-  
+  delay(500);
+  digitalWrite(restartHackHD6, HIGH);
+
   //Initialize the timer
   timeStart1 = millis();
 }
-  
+
 void loop(){
   Serial.println("Message from atmega");
   //Initialize the string after each pass
   cameraStatusToTransmit = "";
   cameraStatusToTransmit = "HackHD";
-  
+
   //CAMERA 1 STATE TEST
- // pinMode(HackHD1LED, INPUT);
+  // pinMode(HackHD1LED, INPUT);
   HackHD1State = digitalRead(HackHD1LED);
   delay(50);
   if(HackHD1State) {
@@ -109,9 +116,9 @@ void loop(){
     delay(20);
     HackHD1State = digitalRead(HackHD1LED);
     if(((millis() - timeStart1) > 3000) && (!HackHD1State)){
-      digitalWrite(restartHackHD1, HIGH);
-      delay(800);
       digitalWrite(restartHackHD1, LOW);
+      delay(500);
+      digitalWrite(restartHackHD1, HIGH);
       //Serial.println("HackHD1RESET");
       cameraStatusToTransmit += "0";
       timeStart1 = millis();
@@ -124,12 +131,12 @@ void loop(){
       break;
     }  
   }
- // pinMode(HackHD1LED, OUTPUT);
+  // pinMode(HackHD1LED, OUTPUT);
   delay(5000);
-  
+
 
   //CAMERA 2 STATE TEST
-//  pinMode(HackHD2LED, INPUT);
+  //  pinMode(HackHD2LED, INPUT);
   HackHD2State = digitalRead(HackHD2LED);
   delay(50);
   if(HackHD2State) {
@@ -140,9 +147,9 @@ void loop(){
     delay(20);
     HackHD2State = digitalRead(HackHD2LED);
     if(((millis() - timeStart1) > 3000) && (!HackHD2State)){
-      digitalWrite(restartHackHD2, HIGH);
-      delay(800);
       digitalWrite(restartHackHD2, LOW);
+      delay(500);
+      digitalWrite(restartHackHD2, HIGH);
       //Serial.println("HackHD2RESET");
       cameraStatusToTransmit += "0";
       timeStart1 = millis();
@@ -155,12 +162,12 @@ void loop(){
       break;
     }  
   }
- // pinMode(HackHD2LED, OUTPUT);
+  // pinMode(HackHD2LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 3 STATE TEST
-//  pinMode(HackHD3LED, INPUT);
+  //  pinMode(HackHD3LED, INPUT);
   HackHD3State = digitalRead(HackHD3LED);
   delay(50);
   if(HackHD3State) {
@@ -171,9 +178,9 @@ void loop(){
     delay(20);
     HackHD3State = digitalRead(HackHD3LED);
     if(((millis() - timeStart1) > 3000) && (!HackHD3State)){
-      digitalWrite(restartHackHD3, HIGH);
-      delay(800);
       digitalWrite(restartHackHD3, LOW);
+      delay(500);
+      digitalWrite(restartHackHD3, HIGH);
       //Serial.println("HackHD3RESET");
       cameraStatusToTransmit += "0";
       timeStart1 = millis();
@@ -186,12 +193,12 @@ void loop(){
       break;
     }  
   }
-//  pinMode(HackHD3LED, OUTPUT);
+  //  pinMode(HackHD3LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 4 STATE TEST
- // pinMode(HackHD4LED, INPUT);
+  // pinMode(HackHD4LED, INPUT);
   HackHD4State = digitalRead(HackHD4LED);
   delay(500);
   if(HackHD4State) {
@@ -202,9 +209,9 @@ void loop(){
     delay(20);
     HackHD4State = digitalRead(HackHD4LED);
     if(((millis() - timeStart1) > 3000) && (!HackHD4State)){
-      digitalWrite(restartHackHD4, HIGH);
-      delay(800);
       digitalWrite(restartHackHD4, LOW);
+      delay(500);
+      digitalWrite(restartHackHD4, HIGH);
       //Serial.println("HackHD4RESET");
       cameraStatusToTransmit += "0";
       timeStart1 = millis();
@@ -217,12 +224,12 @@ void loop(){
       break;
     }  
   }
-//  pinMode(HackHD4LED, OUTPUT);
+  //  pinMode(HackHD4LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 5 STATE TEST
- // pinMode(HackHD5LED, INPUT);
+  // pinMode(HackHD5LED, INPUT);
   HackHD5State = digitalRead(HackHD5LED);
   delay(50);
   if(HackHD5State) {
@@ -233,9 +240,9 @@ void loop(){
     delay(20);
     HackHD5State = digitalRead(HackHD5LED);
     if(((millis() - timeStart1) > 3000) && (!HackHD5State)){
-      digitalWrite(restartHackHD5, HIGH);
-      delay(800);
       digitalWrite(restartHackHD5, LOW);
+      delay(500);
+      digitalWrite(restartHackHD5, HIGH);
       //Serial.println("HackHD5RESET");
       cameraStatusToTransmit += "0";
       timeStart1 = millis();
@@ -248,12 +255,12 @@ void loop(){
       break;
     }  
   }
-//  pinMode(HackHD5LED, OUTPUT);
+  //  pinMode(HackHD5LED, OUTPUT);
   delay(5000);
 
 
   //CAMERA 6 STATE TEST
-//  pinMode(HackHD6LED, INPUT);
+  //  pinMode(HackHD6LED, INPUT);
   HackHD6State = digitalRead(HackHD6LED);
   delay(50);
   if(HackHD6State) {
@@ -264,9 +271,9 @@ void loop(){
     delay(20);
     HackHD6State = digitalRead(HackHD6LED);
     if(((millis() - timeStart1) > 3000) && (!HackHD6State)){
-      digitalWrite(restartHackHD6, HIGH);
-      delay(800);
       digitalWrite(restartHackHD6, LOW);
+      delay(500);
+      digitalWrite(restartHackHD6, HIGH);
       //Serial.println("HackHD6RESET");
       cameraStatusToTransmit += "0";
       timeStart1 = millis();
@@ -279,11 +286,13 @@ void loop(){
       break;
     }  
   }
-//  pinMode(HackHD6LED, OUTPUT);
+  //  pinMode(HackHD6LED, OUTPUT);
   delay(5000);
-  
-  
+
+
   //SEND THE STRING TO THE RADIO
   //Serial.print("Camera Status To Transmit: ");
   Serial.println(cameraStatusToTransmit);
 }
+
+
