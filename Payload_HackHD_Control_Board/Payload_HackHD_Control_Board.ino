@@ -99,7 +99,6 @@ void setup(){
 }
 
 void loop(){
-  Serial.println("Message from atmega");
   //Initialize the string after each pass
   cameraStatusToTransmit = "";
   cameraStatusToTransmit = "HackHD";
