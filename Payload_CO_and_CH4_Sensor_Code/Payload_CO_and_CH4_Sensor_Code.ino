@@ -10,7 +10,16 @@
 //NEED TO ADD IN INFO FOR THREE TEMPERATURES
 //ATTEMPT TO GET OZONE SENSOR OPERATIONAL
 
+#include <Wire.h>
+#include <Adafruit_MPL3115A2.h>
 
+Adafruit_MPL3115A2 baro = Adafruit_MPL3115A2();
+
+#define TempSensor1 5
+#define TempSensor2 6
+#define TempSensor3 7
+
+//Probably do not need the int to string code, want to test on radios first.
 char _int2str[7];
 
 char* int2str( register int i ) {
@@ -177,6 +186,12 @@ void loop()
   Serial.print("G");
   Serial.println(ch4ppm);
   delay(2000);
+  
+  //TEMPERATURE CODE BELOW, STILL UNDER CONSTRUCTION
+  digitalWrite(led, HIGH);
+  
+  
+  
 
 }
 
