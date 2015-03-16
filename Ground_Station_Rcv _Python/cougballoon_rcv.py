@@ -45,12 +45,12 @@ RMCyear = 0
 RMChours = 0
 RMCminutes = 0
 RMCseconds = 0
-extTemp = 0
+extTemp = 70.0
 intTemp = 0
 vidTemp = 0
 COlevel = 0
 CH4level = 0
-HackStatus = "HackHD110110"
+HackStatus = "110110"
 
 GGAreceived = False
 RMCreceived = False
@@ -112,6 +112,14 @@ def handleGPSdata(nmeaString):
 
 #Get JSON data and send it to the server
 def parseToJson(RMClongitude, RMClatitude, GGAaltitude, RMCspeed, RMCheading, RMCday, RMCmonth, RMCyear, RMChours, RMCminutes, RMCseconds, extTemp, intTemp, vidTemp, COlevel, CH4level, HackStatus):
+  JSONdata2 = { 'cougballoon':[ { 'Longitude':RMClongitude, 'Latitude':RMClatitude, 'Altitude':GGAaltitude, 'Speed':RMCspeed, 'Heading':RMCheading, 'Time':{'Day':RMCday, 'Month':RMCmonth, 'Year':RMCyear, 'Hours':RMChours, 'Minutes':RMCminutes, 'Seconds':RMCseconds},'External temperature(deg F)':extTemp, 'Internal temperature(deg F)':intTemp, 'Video Transmitter temperature(deg F)':vidTemp, 'Carbon Monoxide level(ppm)':COlevel, 'Methane level(ppm)':CH4level, 'HackHD':HackStatus } ] }
+  data_string2 = json.dumps(JSONdata2)
+  #Now post it to json_data.json for the map legend
+  f = open('/Users/michaelhamilton/Desktop/json_data.json', 'w')
+  f.write(data_string2)
+  f.close()
+  os.system("scp /Users/michaelhamilton/Desktop/json_data.json mikehmbn@lx.encs.vancouver.wsu.edu:Sites/")
+  #Now to handle it for json_data.html
   JSONdata = [ { 'Longitude':RMClongitude, 'Latitude':RMClatitude, 'Altitude':GGAaltitude, 'Speed(mph)':RMCspeed, 'Heading':RMCheading, 'Time':{'Day':RMCday, 'Month':RMCmonth, 'Year':RMCyear, 'Hours':RMChours, 'Minutes':RMCminutes, 'Seconds':RMCseconds},'External temperature(deg F)':extTemp, 'Internal temperature(deg F)':intTemp, 'Video Transmitter temperature(deg F)':vidTemp, 'Carbon Monoxide level(ppm)':COlevel, 'Methane level(ppm)':CH4level, 'HackHD camera statuses':HackStatus } ]
   data_string = json.dumps(JSONdata)
   JSONdataString = str(data_string)
@@ -157,7 +165,7 @@ def RegExprNMEAdataRMC(line):
   RMCspeed = StringToFloatGPS(RMCspeed)
   global RMCheading
   RMCheading = newRMCline.group(7)
-  RMCheading = StringToFloat(RMCheading)  
+  RMCheading = StringToFloatGPS(RMCheading)  
   global RMCday
   RMCday = newRMCline.group(8)
   global RMCmonth
@@ -182,13 +190,13 @@ def RegExprNMEAdataGGA(line):
   GGAseconds = newGGAline.group(3)
   global GGAlatitude
   GGAlatitude = newGGAline.group(4)
-  GGAlatitude = StringToFloat(GGAlatitude)
+  GGAlatitude = StringToFloatGPS(GGAlatitude)
   global GGAlongitude
   GGAlongitude = newGGAline.group(5)
-  GGAlongitude = StringToFloat(GGAlongitude)
+  GGAlongitude = StringToFloatGPS(GGAlongitude)
   global GGAaltitude
   GGAaltitude = newGGAline.group(6)
-  GGAaltitude = StringToFloat(GGAaltitude)
+  GGAaltitude = StringToFloatGPS(GGAaltitude)
   return True
 
 #Get my login and keys ready ro send data to plot.ly
