@@ -188,7 +188,7 @@ void loop()
   delay(2000);
   
   //TEMPERATURE CODE BELOW, STILL UNDER CONSTRUCTION
-  digitalWrite(led, HIGH);
+  //digitalWrite(led, HIGH);
   
   
   

@@ -7,10 +7,8 @@
 ##  v1.1 Mar 13, 2015 - added JSON
 ##################################
 
-#Modified file for Raspberry Pi on Raspberry Pi /home/pi/Desktop/.
-
 #If we use this, we may end up having to adjust the axis titles and legends 
-#of the charts manually
+#of the charts manually.
 
 #Exactly how many streams do we want? How many graphs? Figure it out.
 
@@ -50,7 +48,7 @@ intTemp = 0
 vidTemp = 0
 COlevel = 0
 CH4level = 0
-HackStatus = "110110"
+HackStatus = "000000"
 
 GGAreceived = False
 RMCreceived = False
@@ -146,33 +144,36 @@ def RegExprNMEAdataRMC(line):
   print line
   newRMCline = re.match( r'\$GPRMC,(\d\d)(\d\d)(\d\d).*,\D,(\d+.\d+),\D,(\d+.\d+),\D,(\d+.\d+),(\d+.\d+),(\d\d)(\d\d)(\d\d),.*,.*', line, re.I)
   #All data are strings, not integers
-  global RMChours
-  RMChours = newRMCline.group(1)
-  #Convert UTC hours to PST(Daylight Savings Time)
-  RMChours = UTCtoPSTDST(RMChours)
-  global RMCminutes
-  RMCminutes = newRMCline.group(2)
-  global RMCseconds
-  RMCseconds = newRMCline.group(3)
-  global RMClatitude
-  RMClatitude = newRMCline.group(4)
-  RMClatitude = StringToFloatGPS(RMClatitude)
-  global RMClongitude
-  RMClongitude = newRMCline.group(5)
-  RMClongitude = StringToFloatGPS(RMClongitude)
-  global RMCspeed
-  RMCspeed = newRMCline.group(6)
-  RMCspeed = StringToFloatGPS(RMCspeed)
-  global RMCheading
-  RMCheading = newRMCline.group(7)
-  RMCheading = StringToFloatGPS(RMCheading)  
-  global RMCday
-  RMCday = newRMCline.group(8)
-  global RMCmonth
-  RMCmonth = newRMCline.group(9)
-  global RMCyear
-  RMCyear = newRMCline.group(10) 
-  return True
+  if (newRMCline):
+      global RMChours
+      RMChours = newRMCline.group(1)
+      #Convert UTC hours to PST(Daylight Savings Time)
+      RMChours = UTCtoPSTDST(RMChours)
+      global RMCminutes
+      RMCminutes = newRMCline.group(2)
+      global RMCseconds
+      RMCseconds = newRMCline.group(3)
+      global RMClatitude
+      RMClatitude = newRMCline.group(4)
+      RMClatitude = StringToFloatGPS(RMClatitude)
+      global RMClongitude
+      RMClongitude = newRMCline.group(5)
+      RMClongitude = StringToFloatGPS(RMClongitude)
+      global RMCspeed
+      RMCspeed = newRMCline.group(6)
+      RMCspeed = StringToFloatGPS(RMCspeed)
+      global RMCheading
+      RMCheading = newRMCline.group(7)
+      RMCheading = StringToFloatGPS(RMCheading)  
+      global RMCday
+      RMCday = newRMCline.group(8)
+      global RMCmonth
+      RMCmonth = newRMCline.group(9)
+      global RMCyear
+      RMCyear = newRMCline.group(10) 
+      return True
+  else:
+      return False  
   
 #Parse out the data from an GGA nmea string
 def RegExprNMEAdataGGA(line):
@@ -180,24 +181,27 @@ def RegExprNMEAdataGGA(line):
   print line    
   newGGAline = re.match( r'\$GPGGA,(\d\d)(\d\d)(\d\d).*,(.*..*),\D,(.*..*),\D,\d,\d\d\,\d.\d\d,(\d+.\d),\D.*', line, re.I)
   #All data are strings, not integers
-  global GGAhours
-  GGAhours = newGGAline.group(1)
-  #Convert UTC hours to PST(Daylight Savings Time)
-  GGAhours = UTCtoPSTDST(GGAhours)
-  global GGAminutes
-  GGAminutes = newGGAline.group(2)
-  global GGAseconds
-  GGAseconds = newGGAline.group(3)
-  global GGAlatitude
-  GGAlatitude = newGGAline.group(4)
-  GGAlatitude = StringToFloatGPS(GGAlatitude)
-  global GGAlongitude
-  GGAlongitude = newGGAline.group(5)
-  GGAlongitude = StringToFloatGPS(GGAlongitude)
-  global GGAaltitude
-  GGAaltitude = newGGAline.group(6)
-  GGAaltitude = StringToFloatGPS(GGAaltitude)
-  return True
+  if (newGGAline):
+    global GGAhours
+    GGAhours = newGGAline.group(1)
+    #Convert UTC hours to PST(Daylight Savings Time)
+    GGAhours = UTCtoPSTDST(GGAhours)
+    global GGAminutes
+    GGAminutes = newGGAline.group(2)
+    global GGAseconds
+    GGAseconds = newGGAline.group(3)
+    global GGAlatitude
+    GGAlatitude = newGGAline.group(4)
+    GGAlatitude = StringToFloatGPS(GGAlatitude)
+    global GGAlongitude
+    GGAlongitude = newGGAline.group(5)
+    GGAlongitude = StringToFloatGPS(GGAlongitude)
+    global GGAaltitude
+    GGAaltitude = newGGAline.group(6)
+    GGAaltitude = StringToFloatGPS(GGAaltitude)
+    return True
+  else:
+    return False  
 
 #Get my login and keys ready ro send data to plot.ly
 stream_ids = tls.get_credentials_file()['stream_ids']
