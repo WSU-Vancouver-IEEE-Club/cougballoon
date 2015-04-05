@@ -12,6 +12,10 @@
 
 #RSA keys on WSU server not working correctly
 
+#Need to adjust for errors in data, when string is "C-" without the numbers
+
+#Returns zero values if incoming strings are not complete
+
 import re
 import json
 import plotly
@@ -89,6 +93,9 @@ def StringToFloat(a):
   a = a[1:len(a)]
   a = a.rstrip('\n');
   a = a.rstrip('\r');
+  if (a == "-"):
+    print "Only a negative sign in string, returning a zero."
+    return 0
   a = float(a)
   return a
 
@@ -237,7 +244,7 @@ stream1 = Stream(
 #GGAaltitude   #A
 stream2 = Stream(
     token=stream_id2,
-    maxpoints=20 
+    maxpoints=4 
 )
 #Internal temperature   #C
 stream3 = Stream(
