@@ -105,19 +105,20 @@ void setup()
 void loop()  {
 
   //Send the air quality and temperature data
+  delay(1000);
   for (int i = 0; i < 12; i++) {
     calculate_CO_PPM();
     Serial.print("F");
     Serial.println(coppm);
-    delay(100);
+    delay(200);
     calculate_CH4_PPM();
     Serial.print("G");
     Serial.println(ch4ppm);
-    delay(100);
+    delay(200);
     float externalTemperature = extThermistorReading();
     Serial.print("A");
     Serial.println(externalTemperature);
-    delay(100);
+    delay(200);
     float internalTemperature = intThermistorReading();
     Serial.print("C");
     Serial.println(internalTemperature);
@@ -126,7 +127,7 @@ void loop()  {
   
   //Send the GPS data
   readGPS();
-  delay(200);
+  delay(1000);
  
 }
 

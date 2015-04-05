@@ -5,18 +5,12 @@
 ##  #cougballoon
 ##  v1.0 Mar 1, 2015
 ##  v1.1 Mar 13, 2015 - added JSON
+##  v1.2 Apr 5, 2015 - finalized graphs
 ##################################
 
-#If we use this, we may end up having to adjust the axis titles and legends 
-#of the charts manually.
+#Must adjust the axis titles and legends of the charts manually.
 
-#Exactly how many streams do we want? How many graphs? Figure it out.
-
-#Try to show an altitude graph embedded on map. Not easy.
-
-#Need to edit index.html javascript to do different things with the graph.
-
-#Need to finish incorporating all other data into JSON and plotly graphs.
+#RSA keys on WSU server not working correctly
 
 import re
 import json
@@ -43,12 +37,18 @@ RMCyear = 0
 RMChours = 0
 RMCminutes = 0
 RMCseconds = 0
-extTemp = 70.0
-intTemp = 0
-vidTemp = 0
-COlevel = 0
-CH4level = 0
-HackStatus = "000000"
+extTemp = 70.0 #A
+intTemp = 0 #C
+vidTemp = 40.0 #E
+COlevel = 0 #F
+CH4level = 0 #G
+HackStatus = "000000" #Hack
+roll = 0
+pitch = 0
+heading = 0
+pressure = 0
+pressureAltitude = 0
+temperature10DOF = 0
 
 GGAreceived = False
 RMCreceived = False
@@ -82,7 +82,11 @@ def StringToFloatGPS(a):
 
 #COnvert data strings to floats
 def StringToFloat(a):
-  a = a[1:7]
+  #print len(a)
+  if (len(a) < 4):
+    print "Incomplete data, returning a zero."
+    return 0
+  a = a[1:len(a)]
   a = a.rstrip('\n');
   a = a.rstrip('\r');
   a = float(a)
@@ -199,6 +203,7 @@ def RegExprNMEAdataGGA(line):
     global GGAaltitude
     GGAaltitude = newGGAline.group(6)
     GGAaltitude = StringToFloatGPS(GGAaltitude)
+    s2.write(dict(x=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), y=GGAaltitude))
     return True
   else:
     return False  
@@ -208,13 +213,20 @@ stream_ids = tls.get_credentials_file()['stream_ids']
 
 #Set up the plotly streams
 stream_id1 = stream_ids[0]#External temperature   #A
-stream_id2 = stream_ids[1]#External pressure      #B
+stream_id2 = stream_ids[1]#GGAaltitude            #B
 stream_id3 = stream_ids[2]#Internal temperature   #C
-stream_id4 = stream_ids[3]#Internal pressure      #D
-stream_id5 = stream_ids[4]#Videolynx temperature  #E
+#stream_id4 = stream_ids[3]#Internal pressure     #D
+stream_id4 = stream_ids[3]#pressureAltitude       #D
+#stream_id5 = stream_ids[4]#Videolynx temperature #E
+stream_id5 = stream_ids[4]#10DOF temperature      #E
 stream_id6 = stream_ids[5]#CO level in ppm        #F
 stream_id7 = stream_ids[6]#CH4 level in ppm       #G
 stream_id8 = stream_ids[7]#Humidity               #J
+stream_id9 = stream_ids[8]#Roll                   #L
+stream_id10 = stream_ids[9]#Pitch                 #P
+#stream_id11 = stream_ids[10]#Heading              #Q
+#stream_id12 = stream_ids[11]#Pressure             #T
+stream_id13 = stream_ids[12]#PressureAltitude     #U
 
 #Graph 1 data, stream names coincide with stream_ids for simplicity
 #External temperature   #A
@@ -222,12 +234,22 @@ stream1 = Stream(
     token=stream_id1,
     maxpoints=20 
 )
+#GGAaltitude   #A
+stream2 = Stream(
+    token=stream_id2,
+    maxpoints=20 
+)
 #Internal temperature   #C
 stream3 = Stream(
     token=stream_id3,
     maxpoints=20  
 )
-#Videolynx temperature  #E
+#pressureAltitude   #C
+stream4 = Stream(
+    token=stream_id4,
+    maxpoints=20 
+)
+#10DOF temperature  #E
 stream5 = Stream(
     token=stream_id5,
     maxpoints=20  
@@ -239,9 +261,34 @@ stream6 = Stream(
     token=stream_id6,
     maxpoints=20 
 )
-#CH4 level in ppm       #G
+#CH4 level in ppm      #G
 stream7 = Stream(
     token=stream_id7,
+    maxpoints=20 
+)
+#Roll                  #L
+stream9 = Stream(
+    token=stream_id9,
+    maxpoints=20 
+)
+#Pitch                 #P
+stream10 = Stream(
+    token=stream_id10,
+    maxpoints=20 
+)
+#Heading               #Q
+#stream11 = Stream(
+#    token=stream_id11,
+#    maxpoints=20 
+#)
+#Pressure              #T
+#stream12 = Stream(
+#    token=stream_id12,
+#    maxpoints=20 
+#)
+#PressureAltitude      #U
+stream13 = Stream(
+    token=stream_id13,
     maxpoints=20 
 )
 
@@ -252,11 +299,23 @@ trace1 = Scatter(
     mode='lines+markers',
     stream=stream1
 )
+trace2 = Scatter(
+    x=[],
+    y=[], 
+    mode='lines+markers',
+    stream=stream2
+)
 trace3 = Scatter(
     x=[],
     y=[], 
     mode='lines+markers',
     stream=stream3
+)
+trace4 = Scatter(
+    x=[],
+    y=[], 
+    mode='lines+markers',
+    stream=stream4
 )
 trace5 = Scatter(
     x=[],
@@ -276,31 +335,91 @@ trace7 = Scatter(
     mode='lines+markers',
     stream=stream7
 )
+trace9 = Scatter(
+    x=[],
+    y=[], 
+    mode='lines+markers',
+    stream=stream9
+)
+trace10 = Scatter(
+    x=[],
+    y=[], 
+    mode='lines+markers',
+    stream=stream10
+)
+#trace11 = Scatter(
+#    x=[],
+#    y=[], 
+#    mode='lines+markers',
+#    stream=stream11
+#)
+#trace12 = Scatter(
+#    x=[],
+#    y=[], 
+#    mode='lines+markers',
+#    stream=stream12
+#)
+trace13 = Scatter(
+    x=[],
+    y=[], 
+    mode='lines+markers',
+    stream=stream13
+)
 
 #Set up the plotly graphs
 data_graph_a = Data([trace1, trace3, trace5])
 data_graph_b = Data([trace6, trace7])
+data_graph_c = Data([trace9, trace10])
+#data_graph_d = Data([trace2, trace4])#Does not work
+data_graph_e = Data([trace2, trace4])
 layout_a = Layout(title='#cougballoon temperatures')#This is the name on the graph
 layout_b = Layout(title='#cougballoon air quality levels')#This is the name on the graph
+layout_c = Layout(title='#cougballoon payload pitch and roll data')#This is the name on the graph
+#layout_d = Layout(title='#cougballoon altitude')#This is the name on the graph
+layout_e = Layout(title='#cougballoon altitude')#This is the name on the graph
 fig_a = Figure(data=data_graph_a, layout=layout_a)
 fig_b = Figure(data=data_graph_b, layout=layout_b)
+fig_c = Figure(data=data_graph_c, layout=layout_c)
+#fig_d = Figure(data=data_graph_d, layout=layout_d)
+fig_e = Figure(data=data_graph_e, layout=layout_e)
 unique_url_a = py.plot(fig_a, filename='cougballoon1', fileopt='extend')#Name above the graph
 unique_url_b = py.plot(fig_b, filename='cougballoon2', fileopt='extend')#Name above the graph
+unique_url_c = py.plot(fig_c, filename='cougballoon3', fileopt='extend')#Name above the graph
+#unique_url_d = py.plot(fig_d, filename='cougballoon4', fileopt='extend')#Name above the graph
+unique_url_e = py.plot(fig_e, filename='cougballoon5', fileopt='extend')#Name above the graph
 #Print the plotly urls
 print unique_url_a
 print unique_url_b
+print unique_url_c
+#print unique_url_d
+print unique_url_e
 #Get the plotly streams ready
 s1 = py.Stream(stream_id1)
+s2 = py.Stream(stream_id2)
 s3 = py.Stream(stream_id3)
+s4 = py.Stream(stream_id4)
 s5 = py.Stream(stream_id5)
 s6 = py.Stream(stream_id6)
 s7 = py.Stream(stream_id7)
+s9 = py.Stream(stream_id9)
+s10 = py.Stream(stream_id10)
+#s11 = py.Stream(stream_id11)
+#s12 = py.Stream(stream_id12)
+#s13 = py.Stream(stream_id13)
+
 #Open the plotly streams
 s1.open()
+s2.open()
 s3.open()
+s4.open()
 s5.open()
 s6.open()
 s7.open()
+s9.open()
+s10.open()
+#s11.open()
+#s12.open()
+#s13.open()
 
 import datetime 
 import time  
@@ -326,6 +445,7 @@ while True:
   #External temperature   #A
   if ((line.find("A")) == 0):
     print "External temperature:"
+    print line
     y = StringToFloat(line)
     saveData(line)
     extTemp = y
@@ -335,6 +455,7 @@ while True:
   #External pressure      #B
   elif ((line.find("B")) == 0):
     print "External Pressure:"
+    print line
     y = StringToFloat(line)
     saveData(line)
     print y   
@@ -343,6 +464,7 @@ while True:
   #Internal temperature   #C  
   elif ((line.find("C")) == 0):
     print "Internal temperature:"
+    print line
     y = StringToFloat(line)
     saveData(line)
     intTemp = y
@@ -352,6 +474,7 @@ while True:
   #Internal pressure      #D
   elif ((line.find("D")) == 0):
     print "Internal pressure:"
+    print line
     y = StringToFloat(line)
     saveData(line)
     print y  
@@ -360,15 +483,17 @@ while True:
   #Videolynx temperature  #E  
   elif ((line.find("E")) == 0):
     print "Videolynx temperature:"
+    print line
     y = StringToFloat(line)
     saveData(line)
     vidTemp = y
     print y
-    s5.write(dict(x=x, y=y))
+    #s5.write(dict(x=x, y=y))
   
   #CO level in ppm        #F  
   elif ((line.find("F")) == 0):
     print "CO level (in ppm):" 
+    print line
     y = StringToFloat(line)
     saveData(line)
     COlevel = y
@@ -378,6 +503,7 @@ while True:
   #CH4 level in ppm       #G  
   elif ((line.find("G")) == 0):
     print "CH4 level (in ppm):"
+    print line
     y = StringToFloat(line)
     saveData(line)
     CH4level = y
@@ -387,6 +513,7 @@ while True:
   #Humidity               #J  
   elif ((line.find("J")) == 0):
     print "Humidity:"
+    print line
     y = StringToFloat(line)
     saveData(line)
     print y
@@ -394,20 +521,25 @@ while True:
   #What data do we want here?  
   elif ((line.find("K")) == 0):
     print "FOUND A K!" 
+    print line
     y = StringToFloat(line)
     saveData(line)
     print y
     
   #What data do we want here?    
   elif ((line.find("L")) == 0):
-    print "FOUND AN L!" 
+    print "Roll:"
+    print line
     y = StringToFloat(line)
     saveData(line)
+    roll = y   
     print y
+    s9.write(dict(x=x, y=y))
     
   #HACKHD INFO BELOW
   elif ((line.find("Hack")) == 0):
     print "HackHD information"
+    print line
     saveData(line)
     HackStatus = line
     HackStatus = HackStatus[6:13]
@@ -417,38 +549,52 @@ while True:
     
   #What data do we want here?  
   elif ((line.find("P")) == 0):
-    print "FOUND A P!"
+    print "Pitch:"
+    print line
     y = StringToFloat(line)
     saveData(line)
+    pitch = y
     print y
+    s10.write(dict(x=x, y=y))
     
   #What data do we want here?
   elif ((line.find("Q")) == 0):
-    print "FOUND A Q!"
+    print "Heading:"
+    print line
     y = StringToFloat(line)
     saveData(line)
+    heading = y
     print y
+    #s11.write(dict(x=x, y=y))
     
   #What data do we want here?
   elif ((line.find("T")) == 0):
-    print "FOUND A T!"
+    print "Pressure"
+    print line
     y = StringToFloat(line)
     saveData(line)
+    pressure = y
     print y
     
   #What data do we want here?
   elif ((line.find("U")) == 0):
-    print "FOUND A U!"  
+    print "Altitude(from press/temp):" 
+    print line
     y = StringToFloat(line)
     saveData(line)
+    pressureAltitude = y
     print y
+    s4.write(dict(x=x, y=y))
     
   #What data do we want here?
   elif ((line.find("V")) == 0):
-    print "FOUND A V!"  
+    print "Temperature(from 10dof):" 
+    print line
     y = StringToFloat(line)
     saveData(line)
+    temperature10DOF = y
     print y
+    s5.write(dict(x=x, y=y))
     
   #Take care of the incoming GPS data, send to plotly and post as JSON 
   elif ((line.find("$")) == 0):

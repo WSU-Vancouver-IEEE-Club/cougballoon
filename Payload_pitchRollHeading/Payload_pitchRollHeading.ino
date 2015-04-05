@@ -47,7 +47,7 @@ void initSensors()
 /**************************************************************************/
 void setup(void)
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println(F("Adafruit 10 DOF Pitch/Roll/Heading Example")); Serial.println("");
   
   /* Initialise the sensors */
@@ -74,12 +74,12 @@ void loop(void)
     //Serial.print(F("Roll: "));
     Serial.print("L");
     Serial.println(orientation.roll);
-    delay(100);
+    delay(300);
     //Serial.print(F("; "));
     //Serial.print(F("Pitch: "));
     Serial.print("P");
     Serial.println(orientation.pitch);
-    delay(100);
+    delay(300);
     //Serial.print(F("; "));
   }
   
@@ -91,6 +91,7 @@ void loop(void)
     //Serial.print(F("Heading: "));
     Serial.print("Q");
     Serial.println(orientation.heading);
+    delay(300);
     //Serial.print(F("; "));
   }
 
@@ -104,23 +105,25 @@ void loop(void)
     
     Serial.print("T");
     Serial.println(bmp_event.pressure);
+    delay(300);
     
     /* Convert atmospheric pressure, SLP and temp to altitude    */
     //Serial.print(F("Alt: "));
-    Serial.print("U");
-    Serial.println(bmp.pressureToAltitude(seaLevelPressure,
+    float altInFeet = bmp.pressureToAltitude(seaLevelPressure,
                                         bmp_event.pressure,
-                                        temperature)); 
-    delay(100);
+                                        temperature); 
+    Serial.print("U");
+    Serial.println(altInFeet/3.2808); 
+    delay(300);
     //Serial.print(F(" m; "));
     /* Display the temperature */
     //Serial.print(F("Temp: "));
     Serial.print("V");
     Serial.println(temperature);
-    delay(100);
+    delay(300);
     //Serial.print(F(" C"));
   }
   
   //Serial.println(F(""));
-  delay(2000);
+  delay(5000);
 }
