@@ -8,7 +8,7 @@
 // v2.0 April 5, 2015 Added thermistor readings
 ///////////////////////////////
 
-//Working on adding SD datalogging support for logging all temps and NMEA strings
+//SD card functionality having difficulty....
 
 //Serial out goes to primary transmitter
 
@@ -16,6 +16,9 @@
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 #include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <avr/sleep.h>
 
 #define THERMISTORPIN1 A5
 #define THERMISTORNOMINAL1 109400 
@@ -31,6 +34,10 @@
 
 #define NUMSAMPLES 5
 
+#define chipSelect 10
+
+File dataFile;
+
 SoftwareSerial mySerial(8, 7);
 Adafruit_GPS GPS(&mySerial);
 
@@ -43,8 +50,8 @@ char c;
 int CO_RawValue;
 int METHANE_RawValue;
 
-const double dV  = 0.0048828125;         // ADC step 5V/1024 4,88mV (10bit ADC)
-//const double Vadc_33 = 0.0032226562;         // ADC step 3,3V/1024 3,22mV (10bit ADC)
+//const double dV  = 0.0048828125;         // ADC step 5V/1024 4,88mV (10bit ADC)
+const double dV = 0.0032226562;         // ADC step 3,3V/1024 3,22mV (10bit ADC)
 double coRl = 5470.0; 
 double coRs;
 double coVrl;                                  // Output voltage
@@ -82,6 +89,7 @@ void setup()
 
   Serial.begin(9600);
   GPS.begin(9600);
+  
   //Serial.println("");
   //Serial.println("");
   //Serial.println("########################################");
@@ -99,6 +107,16 @@ void setup()
   
   //Setup for 3.3V reference voltage
   analogReference(EXTERNAL);
+  
+  pinMode(10, OUTPUT);
+  
+  // see if the card is present and can be initialized:
+  if (!SD.begin(chipSelect)) {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    return;
+  }
+  Serial.println("card initialized.");
   
 }
 
@@ -122,6 +140,26 @@ void loop()  {
     float internalTemperature = intThermistorReading();
     Serial.print("C");
     Serial.println(internalTemperature);
+    delay(200);
+   
+    //static char dataString[15];
+    //dtostrf(internalTemperature, 4, 2, dataString);
+    //Serial.println(dataString);
+    //delay(100);
+    //dataFile = SD.open("test.txt", FILE_WRITE);
+    //delay(50);
+    //Serial.println("file is open");
+    //delay(50);
+    //if (dataFile) {
+    //dataFile.println("test");
+    //dataFile.flush();
+      //dataFile.close();
+      //Serial.println("Saved info...");
+    //}
+    //else if (!dataFile) {
+    //  Serial.println("not open...");
+    //}
+    
     delay(5000);
   }
   
