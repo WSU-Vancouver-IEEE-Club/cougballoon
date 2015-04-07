@@ -6,15 +6,15 @@
 ##  v1.0 Mar 1, 2015
 ##  v1.1 Mar 13, 2015 - added JSON
 ##  v1.2 Apr 5, 2015 - finalized graphs
+##  v1.3 Apr 6, 2015 - repaired value errors
 ##################################
 
-#Must adjust the axis titles and legends of the charts manually.
+#Axis titles and legends have been created, verify they remain upon running.
 
-#RSA keys on WSU server not working correctly
+#Will return previous value if there is an error with the reading, and
+#will output the error to the serial monitor below
 
-#Need to adjust for errors in data, when string is "C-" without the numbers
-
-#Returns zero values if incoming strings are not complete
+#add heading back to graph
 
 import re
 import json
@@ -84,18 +84,19 @@ def StringToFloatGPS(a):
   a = float(a)
   return a
 
+#FIX SO IT DOES NOT RETURN A ZERO!!!!!!!!
 #COnvert data strings to floats
-def StringToFloat(a):
+def StringToFloat(a, b):
   #print len(a)
   if (len(a) < 4):
     print "Incomplete data, returning a zero."
-    return 0
+    return b
   a = a[1:len(a)]
   a = a.rstrip('\n');
   a = a.rstrip('\r');
   if (a == "-"):
     print "Only a negative sign in string, returning a zero."
-    return 0
+    return b
   a = float(a)
   return a
 
@@ -453,7 +454,7 @@ while True:
   if ((line.find("A")) == 0):
     print "External temperature:"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, extTemp)
     saveData(line)
     extTemp = y
     print y
@@ -472,19 +473,19 @@ while True:
   elif ((line.find("C")) == 0):
     print "Internal temperature:"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, intTemp)
     saveData(line)
     intTemp = y
     print y
     s3.write(dict(x=x, y=y)) 
   
   #Internal pressure      #D
-  elif ((line.find("D")) == 0):
-    print "Internal pressure:"
-    print line
-    y = StringToFloat(line)
-    saveData(line)
-    print y  
+  #elif ((line.find("D")) == 0):
+    #print "Internal pressure:"
+    #print line
+    #y = StringToFloat(line)
+    #saveData(line)
+    #print y  
     #s4.write(dict(x=x, y=y)) 
   
   #Videolynx temperature  #E  
@@ -501,7 +502,7 @@ while True:
   elif ((line.find("F")) == 0):
     print "CO level (in ppm):" 
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, COlevel)
     saveData(line)
     COlevel = y
     print y   
@@ -511,7 +512,7 @@ while True:
   elif ((line.find("G")) == 0):
     print "CH4 level (in ppm):"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, CH4level)
     saveData(line)
     CH4level = y
     print y    
@@ -537,7 +538,7 @@ while True:
   elif ((line.find("L")) == 0):
     print "Roll:"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, roll)
     saveData(line)
     roll = y   
     print y
@@ -558,7 +559,7 @@ while True:
   elif ((line.find("P")) == 0):
     print "Pitch:"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, pitch)
     saveData(line)
     pitch = y
     print y
@@ -568,7 +569,7 @@ while True:
   elif ((line.find("Q")) == 0):
     print "Heading:"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, heading)
     saveData(line)
     heading = y
     print y
@@ -578,7 +579,7 @@ while True:
   elif ((line.find("T")) == 0):
     print "Pressure"
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, pressure)
     saveData(line)
     pressure = y
     print y
@@ -587,7 +588,7 @@ while True:
   elif ((line.find("U")) == 0):
     print "Altitude(from press/temp):" 
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, pressureAltitude)
     saveData(line)
     pressureAltitude = y
     print y
@@ -597,7 +598,7 @@ while True:
   elif ((line.find("V")) == 0):
     print "Temperature(from 10dof):" 
     print line
-    y = StringToFloat(line)
+    y = StringToFloat(line, temperature10DOF)
     saveData(line)
     temperature10DOF = y
     print y

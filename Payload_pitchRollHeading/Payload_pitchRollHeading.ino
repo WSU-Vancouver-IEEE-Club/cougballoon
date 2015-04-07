@@ -1,3 +1,14 @@
+///////////////////////////////
+// Written for Arduino UNO/Sparkfun RedBoard
+// (well, 99% of it borrowed..)
+// Michael Hamilton
+// #cougballoon
+// Pitch/Roll/Heading Board
+// v1.0 Apr 5, 2015
+///////////////////////////////
+
+//Sends new data every 5 seconds
+
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
@@ -13,11 +24,6 @@ Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
 /* Update this with the correct SLP for accurate altitude measurements */
 float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
 
-/**************************************************************************/
-/*!
-    @brief  Initialises all the sensors used by this example
-*/
-/**************************************************************************/
 void initSensors()
 {
   if(!accel.begin())
@@ -40,25 +46,13 @@ void initSensors()
   }
 }
 
-/**************************************************************************/
-/*!
-
-*/
-/**************************************************************************/
 void setup(void)
 {
   Serial.begin(9600);
-  Serial.println(F("Adafruit 10 DOF Pitch/Roll/Heading Example")); Serial.println("");
-  
-  /* Initialise the sensors */
+  /* Initialize the sensors */
   initSensors();
 }
 
-/**************************************************************************/
-/*!
-    @brief  Constantly check the roll/pitch/heading/altitude/temperature
-*/
-/**************************************************************************/
 void loop(void)
 {
   sensors_event_t accel_event;
@@ -71,16 +65,12 @@ void loop(void)
   if (dof.accelGetOrientation(&accel_event, &orientation))
   {
     /* 'orientation' should have valid .roll and .pitch fields */
-    //Serial.print(F("Roll: "));
     Serial.print("L");
     Serial.println(orientation.roll);
     delay(300);
-    //Serial.print(F("; "));
-    //Serial.print(F("Pitch: "));
     Serial.print("P");
     Serial.println(orientation.pitch);
     delay(300);
-    //Serial.print(F("; "));
   }
   
   /* Calculate the heading using the magnetometer */
@@ -88,11 +78,9 @@ void loop(void)
   if (dof.magGetOrientation(SENSOR_AXIS_Z, &mag_event, &orientation))
   {
     /* 'orientation' should have valid .heading data now */
-    //Serial.print(F("Heading: "));
     Serial.print("Q");
     Serial.println(orientation.heading);
     delay(300);
-    //Serial.print(F("; "));
   }
 
   /* Calculate the altitude using the barometric pressure sensor */
@@ -108,16 +96,13 @@ void loop(void)
     delay(300);
     
     /* Convert atmospheric pressure, SLP and temp to altitude    */
-    //Serial.print(F("Alt: "));
     float altInFeet = bmp.pressureToAltitude(seaLevelPressure,
                                         bmp_event.pressure,
                                         temperature); 
     Serial.print("U");
     Serial.println(altInFeet/3.2808); 
     delay(300);
-    //Serial.print(F(" m; "));
     /* Display the temperature */
-    //Serial.print(F("Temp: "));
     Serial.print("V");
     Serial.println(temperature);
     delay(300);

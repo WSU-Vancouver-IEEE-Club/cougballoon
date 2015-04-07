@@ -6,37 +6,38 @@
 // v1.0 Jan 9 2015
 // v1.1 March 23, 2015
 // v2.0 April 5, 2015 Added thermistor readings
+// v2.1 April 6, 2015 Added SD card support
 ///////////////////////////////
 
-//SD card functionality having difficulty....
+//SD card needs to save date/time stamps also
+
+//Need to write saveGPSData()
 
 //Serial out goes to primary transmitter
 
 //Can only have one software serial port open at a time on UNO
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
-#include <Wire.h>
+//#include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
-#include <avr/sleep.h>
+//#include <avr/sleep.h>
 
 #define THERMISTORPIN1 A5
-#define THERMISTORNOMINAL1 109400 
-#define TEMPERATURENOMINAL1 23.5
+#define THERMISTORNOMINAL1 11900
+#define TEMPERATURENOMINAL1 20.5
 #define BCOEFFICIENT1 3950
-#define SERIESRESISTOR1 9700 
+#define SERIESRESISTOR1 9700
 
 #define THERMISTORPIN2 A4
-#define THERMISTORNOMINAL2 109400 //Need to update 
-#define TEMPERATURENOMINAL2 24 //Need to update
-#define BCOEFFICIENT2 3950 // Need tp update
+#define THERMISTORNOMINAL2 11900 //Need to update 
+#define TEMPERATURENOMINAL2 20.5 //Need to update
+#define BCOEFFICIENT2 3950 
 #define SERIESRESISTOR2 9700
 
 #define NUMSAMPLES 5
 
 #define chipSelect 10
-
-File dataFile;
 
 SoftwareSerial mySerial(8, 7);
 Adafruit_GPS GPS(&mySerial);
@@ -62,6 +63,9 @@ double ch4Rs;
 double ch4Vrl;                                  // Output voltage
 double ch4ppm;                                  // ppm
 double ch4ratio; 
+
+float externalTemperature;
+float internalTemperature;
 
 void calculate_CO_PPM() {
   double lgPPM;
@@ -133,40 +137,48 @@ void loop()  {
     Serial.print("G");
     Serial.println(ch4ppm);
     delay(200);
-    float externalTemperature = extThermistorReading();
+    externalTemperature = extThermistorReading();
     Serial.print("A");
     Serial.println(externalTemperature);
     delay(200);
-    float internalTemperature = intThermistorReading();
+    internalTemperature = intThermistorReading();
     Serial.print("C");
     Serial.println(internalTemperature);
-    delay(200);
-   
-    //static char dataString[15];
-    //dtostrf(internalTemperature, 4, 2, dataString);
-    //Serial.println(dataString);
-    //delay(100);
-    //dataFile = SD.open("test.txt", FILE_WRITE);
-    //delay(50);
-    //Serial.println("file is open");
-    //delay(50);
-    //if (dataFile) {
-    //dataFile.println("test");
-    //dataFile.flush();
-      //dataFile.close();
-      //Serial.println("Saved info...");
-    //}
-    //else if (!dataFile) {
-    //  Serial.println("not open...");
-    //}
-    
     delay(5000);
+    saveData();
   }
   
   //Send the GPS data
   readGPS();
   delay(1000);
+  saveGPSData();
  
+}
+
+void saveGPSData() {
+  
+}  
+
+void saveData() {
+
+  File dataFile = SD.open("balloon.txt", FILE_WRITE);
+  if (dataFile) {
+    //dataFile.println(internalTemperature);
+    dataFile.print("F");
+    dataFile.println(coppm);
+    dataFile.print("G");
+    dataFile.println(ch4ppm);
+    dataFile.print("A");
+    dataFile.println(externalTemperature);
+    dataFile.print("C");
+    dataFile.println(internalTemperature);
+    dataFile.close();
+    Serial.println("Data_saved");
+  }
+  else if (!dataFile) {
+    Serial.println("Data_not_saved");
+  }
+    
 }
 
 void readGPS() {
